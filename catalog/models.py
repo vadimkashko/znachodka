@@ -4,10 +4,10 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class Item(models.Model):
 
-    ITEM_TYPES = [('lost', 'Страчана'), ('found', 'Знойдзена')]
+    ITEM_TYPES = [('l', 'Lost'), ('f', 'Found')]
 
     name = models.CharField(blank=False, max_length=200)
-    type = models.CharField(blank=False, max_length=5, choices=ITEM_TYPES)
+    type = models.CharField(blank=False, max_length=1, choices=ITEM_TYPES)
     description = models.CharField(blank=True, max_length=1000)
     image = models.ImageField(blank=True, upload_to='images/items')
     first_name = models.CharField(blank=False, max_length=20)
@@ -19,5 +19,5 @@ class Item(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     last_modified_date = models.DateTimeField(auto_now=True)
 
-    def __str__(self) -> str:
-        return self.name
+    # def __str__(self) -> str:
+    #     return self.name

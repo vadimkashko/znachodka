@@ -1,0 +1,7 @@
+{% extends 'catalog/base.html' %} {% block content %}
+<div>
+    {% for key, value in item %}
+    {{ key }}: {{ value }}
+    {% endfor %}
+</div>
+{% endblock content %}

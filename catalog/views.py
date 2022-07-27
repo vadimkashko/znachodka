@@ -4,7 +4,7 @@ from catalog.models import Item
 
 
 def index(request):
-    return render(request, 'catalog/index.html')
+    return render(request, 'index.html')
 
 
 def items(request):

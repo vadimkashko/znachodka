@@ -1,5 +1,5 @@
 .navbar-item img {
-    max-height: 3rem;
+    max-height: 2.75rem;
 }
 
 @media screen and (max-width: 1024px) {

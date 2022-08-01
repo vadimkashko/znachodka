@@ -1,12 +1,27 @@
+/* Navbar logo */
 .navbar-item img {
     max-height: 2.75rem;
 }
 
+/* Disappearing modal button */
+.js-modal-trigger.modal-button.is-overlay {
+    opacity: 0;
+}
+
+.js-modal-trigger.modal-button.is-overlay:hover {
+    opacity: 1;
+}
+
+/* Links */
+.tile.is-parent:hover {
+    padding: 0;
+}
+
 @media screen and (max-width: 1024px) {
     .navbar-dropdown .is-active {
-      display: block;
+        display: block;
     }
     .navbar-dropdown:not(.is-active) {
-      display: none;
+        display: none;
     }
 }

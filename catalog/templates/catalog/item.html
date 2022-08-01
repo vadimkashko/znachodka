@@ -1,7 +1,47 @@
-{% extends 'catalog/base.html' %} {% block content %}
-<div>
-    {% for key, value in item %}
-    {{ key }}: {{ value }}
-    {% endfor %}
-</div>
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block content %}
+<section class="hero is-light is-fullheight-with-navbar">
+    <div class="container">
+        <div class="container is-fluid py-5">
+            <div class="columns card m-0 is-flex-direction-column">
+                <div class="column is-one-third">
+                    <figure class="image">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="Item image not found"/>
+                        <div class="js-modal-trigger modal-button is-overlay" data-target="{{ item.image.name }}">                                        
+                            <span class="icon is-medium">
+                                <i class="fas fa-expand-alt fa-stack-2x fa-inverse"></i>
+                            </span>                                        
+                        </div>
+                        {% else %}
+                        <img src="{% static 'images/items/default_item.png' %}" alt="Default image not found">                                
+                        {% endif %}
+                    </figure>
+                </div>
+                <div class="column">
+                    <div class="content is-small">
+                        <a href="{% url 'item' item.id  %}"><h6 class="title is-6">Name: {{ item.name|capfirst }}</h6></a>
+                        <p><b>City:</b> {{ item.city }}</p>
+                        <p><b>Description:</b> {{ item.description }}</p>
+                    </div>
+                    <div class="content is-small is-flex is-justify-content-space-between is-align-items-flex-end">
+                        <p><b>Date:</b> {{ item.create_date|date:"d-m-Y" }} {{ item.create_date|time:"H:i" }}</p>
+                        <a href="claim_item" class="button is-primary">Claim item</a>
+                    </div>
+                </div>
+            <div id="{{ item.image.name }}" class="modal">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    <p class="image">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="Item image"/>
+                        {% endif %}
+                    </p>
+                </div>
+                <button class="modal-close is-large" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}

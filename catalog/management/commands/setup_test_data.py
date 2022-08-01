@@ -1,15 +1,14 @@
 import random
-from time import sleep
 
 from django.db import transaction
 from django.core.management.base import BaseCommand
 
 from catalog.models import Category, Contact, Item
-from catalog.factories import (CategoryFactory, ContactFactory, ItemFactory)
+from .factories import (CategoryFactory, ContactFactory, ItemFactory)
 
-NUM_CONTACTS = 50
+NUM_CONTACTS = 80
 NUM_CATEGORIES = 10
-NUM_ITEMS = 500
+NUM_ITEMS = 200
 
 
 class Command(BaseCommand):
@@ -26,8 +25,8 @@ class Command(BaseCommand):
         # Create all the contacts
         contacts = []
         for _ in range(NUM_CONTACTS):
-            category = ContactFactory()
-            contacts.append(category)
+            contact = ContactFactory()
+            contacts.append(contact)
 
         # Create all the categories
         categories = []
@@ -37,9 +36,18 @@ class Command(BaseCommand):
 
         # Create all the items
         for _ in range(NUM_ITEMS):
-            sleep(0.01)
+            type = random.choice(['l', 'f'])
             contact = random.choice(contacts)
             category = random.choice(categories)
-            ItemFactory(contact=contact, category=category)
+            if type == 'f':
+                ItemFactory(type=type,
+                            who_found=contact,
+                            who_lost=None,
+                            category=category)
+            else:
+                ItemFactory(type=type,
+                            who_found=None,
+                            who_lost=contact,
+                            category=category)
 
         self.stdout.write("Test data was generated!")

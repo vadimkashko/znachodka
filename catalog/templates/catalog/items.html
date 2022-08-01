@@ -1,13 +1,64 @@
-{% extends 'catalog/base.html' %} {% block content %}
-<div class="container">
-    {% if items_list %}
-    <ul>
-        {% for item in items_list %}
-        <li><a href="/catalog/{{ item.id }}/">{{ item.name }}</a></li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No items are available.</p>
-    {% endif %}
-</div>
+{% extends 'catalog/base.html' %}
+{% load static %}
+{% block title %}Items{% endblock title %}
+{% block content %}
+<section class="hero is-light is-fullheight-with-navbar">
+    <div class="container">
+        <div class="container is-fluid py-5">
+            {% if items_set %}
+            {% for item in items_set %}
+            {% if forloop.first or forloop.counter0|divisibleby:4 %}
+            <div class="tile is-ancestor">
+                {% endif %}
+                <div class="tile is-parent is-3">
+                    <article class="tile is-child is-flex">
+                        <div class="card">
+                            <div class="card-image">
+                                <figure class="image">
+                                    {% if item.image %}
+                                    <img src="{{ item.image.url }}" alt="Item image not found"/>
+                                    <div class="js-modal-trigger modal-button is-overlay" data-target="{{ item.image.name }}">                                        
+                                        <span class="icon is-medium">
+                                            <i class="fas fa-expand-alt fa-stack-2x fa-inverse"></i>
+                                        </span>                                        
+                                    </div>
+                                    {% else %}
+                                    <img src="{% static 'images/items/default_item.png' %}" alt="Default image not found">                                
+                                    {% endif %}
+                                </figure>                                                              
+                            </div>
+                            <div class="card-content">                
+                                <div class="content is-small">
+                                    <a href="{% url 'item' item.id  %}"><h6 class="title is-6">{{ item.name|capfirst }}</h6></a></a>
+                                    <p>{{ item.city }}</p>
+                                    <p>{{ item.create_date|date:"d-m-Y" }} {{ item.create_date|time:"H:i" }}</p>
+                                </div>
+                                <div class="content is-small is-flex is-justify-content-flex-end">
+                                    <a href="claim_item" class="button is-primary">Claim item</a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div id="{{ item.image.name }}" class="modal">
+                    <div class="modal-background"></div>
+                    <div class="modal-content">
+                        <p class="image">
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="Item image"/>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <button class="modal-close is-large" aria-label="close"></button>
+                </div>
+            {% if forloop.counter|divisibleby:4 or forloop.last%}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <p>No items are available.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
 {% endblock content %}

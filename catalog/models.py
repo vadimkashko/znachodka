@@ -6,7 +6,8 @@ class Category(models.Model):
     name = models.CharField(blank=False,
                             max_length=100,
                             unique=True,
-                            help_text='Enter a name for item type')
+                            help_text='Enter a name for item type',
+                            db_index=True)
 
     class Meta:
         verbose_name_plural = "categories"
@@ -33,6 +34,8 @@ class Contact(models.Model):
     phone_number = PhoneNumberField(blank=False,
                                     help_text='Enter phone number',
                                     unique=True)
+    create_date = models.DateTimeField(auto_now_add=True)
+    last_modified_date = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return ' '.join((self.first_name, self.last_name))
@@ -44,26 +47,45 @@ class Item(models.Model):
     FOUND = 'f'
     ITEM_TYPES = [(LOST, 'Lost'), (FOUND, 'Found')]
 
+    is_active = models.BooleanField(blank=False,
+                                    default=True,
+                                    editable=False,
+                                    help_text='Item status')
     name = models.CharField(blank=False,
                             max_length=200,
-                            help_text='Enter a short name for item')
+                            help_text='Short name for item')
     category = models.ForeignKey(Category,
-                                 on_delete=models.SET_NULL,
+                                 on_delete=models.DO_NOTHING,
                                  blank=False,
-                                 null=True)
+                                 null=True,
+                                 help_text='Item category')
     type = models.CharField(blank=False,
                             max_length=1,
                             choices=ITEM_TYPES,
                             default=FOUND,
-                            help_text='Choose item type')
+                            help_text='Item type')
+    city = models.CharField(blank=False, max_length=20)
     description = models.TextField(blank=True,
                                    max_length=1000,
-                                   help_text='Enter description for item')
-    image = models.ImageField(blank=True, upload_to='images/items')
-    city = models.CharField(blank=False, max_length=20)
+                                   help_text='Description for item')
     create_date = models.DateTimeField(auto_now_add=True)
     last_modified_date = models.DateTimeField(auto_now=True)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=False)
+    who_found = models.ForeignKey(Contact,
+                                  on_delete=models.DO_NOTHING,
+                                  blank=True,
+                                  related_name='who_found',
+                                  null=True
+                                  )
+    who_lost = models.ForeignKey(Contact,
+                                 on_delete=models.DO_NOTHING,
+                                 blank=True,
+                                 related_name='who_lost',
+                                 null=True
+                                 )
+    image = models.ImageField(blank=True,
+                              upload_to='images/items',
+                              default='images/items/default_item.png',
+                              help_text='Photo of item')
 
     def __str__(self) -> str:
         return self.name

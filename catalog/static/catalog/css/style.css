@@ -1,6 +1,16 @@
-/* Navbar logo */
+/* Navbar logo size*/
 .navbar-item img {
     max-height: 2.75rem;
+}
+
+/* Navbar-dropdown activation */
+@media screen and (max-width: 1024px) {
+    .navbar-dropdown .is-active {
+        display: block;
+    }
+    .navbar-dropdown:not(.is-active) {
+        display: none;
+    }
 }
 
 /* Disappearing modal button */
@@ -12,16 +22,30 @@
     opacity: 1;
 }
 
-/* Links */
-.tile.is-parent:hover {
-    padding: 0;
+/* Modal image size */
+@media screen and (min-width: 769px) {
+    .modal-content,
+    .modal-card {
+        margin: 0 auto;
+        max-height: calc(100vh - 40px);
+        width:auto;
+        max-width: 75%;
+    }
 }
 
-@media screen and (max-width: 1024px) {
-    .navbar-dropdown .is-active {
-        display: block;
-    }
-    .navbar-dropdown:not(.is-active) {
-        display: none;
-    }
+/* Cards resizing on hover */
+div.column.is-one-quarter-fullhd.is-one-third-desktop.is-half-tablet:hover {
+    padding: 0 !important;
+}
+
+/* Links decoration*/
+a[href]:hover {
+    text-decoration-line: underline;
+}
+
+/* Pagination */
+.pagination-link.is-current {
+    background-color: #e81725;
+    border-color: #e81725;
+    color: #fff !important;
 }

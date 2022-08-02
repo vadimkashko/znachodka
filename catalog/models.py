@@ -6,7 +6,7 @@ class Category(models.Model):
     name = models.CharField(blank=False,
                             max_length=100,
                             unique=True,
-                            help_text='Enter a name for item type',
+                            help_text='Category name',
                             db_index=True)
 
     class Meta:
@@ -24,15 +24,15 @@ class Category(models.Model):
 class Contact(models.Model):
     first_name = models.CharField(blank=False,
                                   max_length=20,
-                                  help_text='Enter name')
+                                  help_text='First name')
     last_name = models.CharField(blank=False,
                                  max_length=20,
-                                 help_text='Enter last name')
+                                 help_text='Last name')
     email = models.EmailField(blank=False,
-                              help_text='Enter e-mail',
+                              help_text='E-mail',
                               unique=True)
     phone_number = PhoneNumberField(blank=False,
-                                    help_text='Enter phone number',
+                                    help_text='Phone number',
                                     unique=True)
     create_date = models.DateTimeField(auto_now_add=True)
     last_modified_date = models.DateTimeField(auto_now=True)
@@ -45,7 +45,7 @@ class Item(models.Model):
 
     LOST = 'l'
     FOUND = 'f'
-    ITEM_TYPES = [(LOST, 'Lost'), (FOUND, 'Found')]
+    ITEM_TYPES = [(LOST, 'lost'), (FOUND, 'found')]
 
     is_active = models.BooleanField(blank=False,
                                     default=True,
@@ -74,14 +74,12 @@ class Item(models.Model):
                                   on_delete=models.DO_NOTHING,
                                   blank=True,
                                   related_name='who_found',
-                                  null=True
-                                  )
+                                  null=True)
     who_lost = models.ForeignKey(Contact,
                                  on_delete=models.DO_NOTHING,
                                  blank=True,
                                  related_name='who_lost',
-                                 null=True
-                                 )
+                                 null=True)
     image = models.ImageField(blank=True,
                               upload_to='images/items',
                               default='images/items/default_item.png',
@@ -89,3 +87,13 @@ class Item(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def get_type(self) -> str:
+        for pair in self.ITEM_TYPES:
+            if self.type in pair:
+                return pair[1]
+
+    def get_status(self) -> str:
+        if self.is_active:
+            return 'opened'
+        return 'closed'

@@ -53,9 +53,11 @@
               <a class="navbar-link"> Items </a>
 
               <div class="navbar-dropdown">
-                <a class="navbar-item" href="{% url 'by_type' 'f' %}"> Found </a>
+                <a class="navbar-item" href="{% url 'all_items' %}"> All items </a>
                 <hr class="navbar-divider" />
-                <a class="navbar-item" href="{% url 'by_type' 'l' %}"> Lost </a>
+                <a class="navbar-item" href="{% url 'by_type' 'f' %}"> Found items </a>
+                <hr class="navbar-divider" />
+                <a class="navbar-item" href="{% url 'by_type' 'l' %}"> Lost items </a>
               </div>
             </div>
 

@@ -1,0 +1,16 @@
+<div class="js-modal-trigger modal-button is-overlay" data-target="{{ item.image.name }}">                                        
+    <span class="icon is-medium">
+        <i class="fas fa-expand-alt fa-stack-2x fa-inverse"></i>
+    </span>                                        
+</div>
+<div id="{{ item.image.name }}" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <p class="image">
+            {% if item.image %}
+            <img src="{{ item.image.url }}" alt="Item image"/>
+            {% endif %}
+        </p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>

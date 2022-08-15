@@ -24,15 +24,15 @@ SECRET_KEY = 'django-insecure-t%fnk-(i(!=@tif!rkw@pphiq6n!52itnlpvn_qetdpugfgz0d
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.109']
 
 # Application definition
 
 INSTALLED_APPS = [
-    'catalog.apps.CatalogConfig', 'django.contrib.admin',
-    'django.contrib.auth', 'django.contrib.contenttypes',
-    'django.contrib.sessions', 'django.contrib.messages',
-    'django.contrib.staticfiles', 'phonenumber_field'
+    'catalog', 'django.contrib.admin', 'django.contrib.auth',
+    'django.contrib.contenttypes', 'django.contrib.sessions',
+    'django.contrib.messages', 'django.contrib.staticfiles',
+    'phonenumber_field'
 ]
 
 MIDDLEWARE = [
@@ -50,7 +50,7 @@ ROOT_URLCONF = 'znachodka.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [Path.joinpath(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,10 +119,11 @@ PHONENUMBER_DEFAULT_FORMAT = 'E164'
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = Path.joinpath(BASE_DIR, '/static/')
+STATIC_ROOT = Path.joinpath(BASE_DIR, 'static')
+STATICFILES_DIRS = [Path.joinpath(BASE_DIR, 'bulma/static')]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = Path.joinpath(BASE_DIR, '/media/')
+MEDIA_ROOT = Path.joinpath(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

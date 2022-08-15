@@ -8,8 +8,16 @@ def index(request):
     return render(request, 'catalog/index.html')
 
 
+def help(request):
+    return render(request, 'catalog/help.html')
+
+
 def items(request, **kwargs):
-    items_set = Item.objects.filter(**kwargs).order_by('-create_date')
+    if (query := request.GET.get('q')):
+        items_set = Item.objects.filter(
+            name__icontains=query).order_by('-create_date')
+    else:
+        items_set = Item.objects.filter(**kwargs).order_by('-create_date')
 
     # Pagination
     if (per_page := request.GET.get('per_page')):
@@ -23,7 +31,8 @@ def items(request, **kwargs):
     context = {
         'items_set': items_set,
         'page_obj': page_obj,
-        'per_page': per_page
+        'per_page': per_page,
+        'q': query
     }
 
     # Context for breadcrumb
@@ -52,6 +61,9 @@ def item(request, item_id):
 
 def add_item(request):
     if request.method == 'POST':
+
+        if 'cancel' in request.POST:
+            return redirect('home')
 
         contact_form = AddContact(request.POST, request.FILES)
         item_form = AddItem(request.POST, request.FILES)
@@ -86,4 +98,44 @@ def add_item(request):
     return render(request, 'catalog/add_item.html', {
         'contact_form': contact_form,
         'item_form': item_form
+    })
+
+
+def respond(request, item_id):
+    if request.method == 'POST':
+
+        if 'cancel' in request.POST:
+            return redirect('home')
+
+        contact_form = AddContact(request.POST)
+
+        if contact_form.is_valid():
+
+            new_contact = contact_form.save(commit=False)
+
+            contact, created = Contact.objects.update_or_create(
+                email__iexact=new_contact.email,
+                defaults={
+                    'first_name': new_contact.first_name,
+                    'last_name': new_contact.last_name,
+                    'email': new_contact.email,
+                    'phone_number': new_contact.phone_number
+                })
+
+            item = Item.objects.get(id=item_id)
+            if item.type == 'l':
+                item.who_found = contact
+            elif item.type == 'f':
+                item.who_lost = contact
+            item.is_active = False
+            item.save()
+            item.refresh_from_db()
+
+            return redirect('item', item.id)
+    else:
+
+        contact_form = AddContact()
+
+    return render(request, 'catalog/respond.html', {
+        'contact_form': contact_form
     })

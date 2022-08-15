@@ -42,7 +42,7 @@
             <p><b>Description: </b> {{ item.description }}</p>
             <p><b>Date: </b> {{ item.create_date|date:"d-m-Y" }} {{ item.create_date|time:"H:i" }}</p>
         </div>
-        {% include 'catalog/item_button.html' %}
+        {% include 'catalog/respond_button.html' %}
     </div>
 </div>    
 {% endblock content %}

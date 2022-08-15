@@ -1,7 +1,7 @@
 import factory
 from factory.django import DjangoModelFactory, ImageField
 
-from catalog.models import Category, Contact, Item
+from catalog.models import Category, City, Contact, Item
 
 
 class CategoryFactory(DjangoModelFactory):
@@ -11,6 +11,15 @@ class CategoryFactory(DjangoModelFactory):
         django_get_or_create = ('name',)
 
     name = factory.Faker('word')
+
+
+class CityFactory(DjangoModelFactory):
+
+    class Meta:
+        model = City
+        django_get_or_create = ('name',)
+
+    name = factory.Faker('city')
 
 
 class ContactFactory(DjangoModelFactory):
@@ -45,7 +54,7 @@ class ItemFactory(DjangoModelFactory):
     description = factory.Faker("paragraph",
                                 nb_sentences=5,
                                 variable_nb_sentences=True)
-    city = factory.Faker('city')
+    city = factory.SubFactory(CityFactory)
     who_found = factory.SubFactory(ContactFactory)
     who_lost = factory.SubFactory(ContactFactory)
     image = ImageField(from_path='catalog/management/commands/test_image.png',

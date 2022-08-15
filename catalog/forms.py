@@ -6,11 +6,14 @@ class AddContact(forms.ModelForm):
 
     class Meta:
         model = Contact
-        fields = '__all__'
+        exclude = ['create_date', 'last_modified_date']
 
 
 class AddItem(forms.ModelForm):
 
     class Meta:
         model = Item
-        fields = '__all__'
+        exclude = [
+            'is_active', 'create_date', 'last_modified_date', 'who_found',
+            'who_lost'
+        ]

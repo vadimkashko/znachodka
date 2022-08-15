@@ -1,26 +1,21 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render
-from django.views.generic.edit import CreateView
-from catalog.models import Category, Contact, Item
+from django.shortcuts import redirect, render
+from catalog.forms import AddContact, AddItem
+from catalog.models import Category, City, Contact, Item
 
 
 def index(request):
     return render(request, 'catalog/index.html')
 
 
-class ContactAdd(CreateView):
-    model = Contact
-    fields = '__all__'
-
-
 def items(request, **kwargs):
-    items_set = Item.objects.filter(**kwargs).order_by('create_date')
+    items_set = Item.objects.filter(**kwargs).order_by('-create_date')
 
     # Pagination
     if (per_page := request.GET.get('per_page')):
         request.session['per_page'] = int(per_page)
     per_page = request.session.get('per_page', 12)
-    paginator = Paginator(items_set, per_page)
+    paginator = Paginator(items_set, per_page, orphans=4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -40,15 +35,55 @@ def items(request, **kwargs):
                 v,
                 Category.objects.get(id=v).name,
             )
+        elif k == 'city_id':
+            context['city'] = (
+                v,
+                City.objects.get(id=v).name,
+            )
 
     return render(request, 'catalog/items.html', context)
 
 
 def item(request, item_id):
     item = Item.objects.filter(id=item_id)[0]
-    context = {
-        'item': item,
-        'type': tuple(filter(lambda x: item.type in x, Item.ITEM_TYPES))[0][1],
-        'category': Category.objects.get(id=item.category_id)
-    }
+    context = {'item': item}
     return render(request, 'catalog/item.html', context)
+
+
+def add_item(request):
+    if request.method == 'POST':
+
+        contact_form = AddContact(request.POST, request.FILES)
+        item_form = AddItem(request.POST, request.FILES)
+
+        if all((contact_form.is_valid(), item_form.is_valid())):
+
+            new_contact = contact_form.save(commit=False)
+
+            contact, created = Contact.objects.update_or_create(
+                email__iexact=new_contact.email,
+                defaults={
+                    'first_name': new_contact.first_name,
+                    'last_name': new_contact.last_name,
+                    'email': new_contact.email,
+                    'phone_number': new_contact.phone_number
+                })
+
+            item = item_form.save(commit=False)
+            if item.type == 'f':
+                item.who_found = contact
+            elif item.type == 'l':
+                item.who_lost = contact
+            item.save()
+            item.refresh_from_db()
+
+            return redirect('item', item.id)
+    else:
+
+        contact_form = AddContact()
+        item_form = AddItem()
+
+    return render(request, 'catalog/add_item.html', {
+        'contact_form': contact_form,
+        'item_form': item_form
+    })
